@@ -1,0 +1,81 @@
+%% ---
+%%  Excerpted from "Programming Erlang, Second Edition",
+%%  published by The Pragmatic Bookshelf.
+%%  Copyrights apply to this code. It may not be used to create training material, 
+%%  courses, books, articles, and the like. Contact us if you are in doubt.
+%%  We make no guarantees that this code is fit for any purpose. 
+%%  Visit http://www.pragmaticprogrammer.com/titles/jaerlang2 for more book information.
+%%---
+%% Copyright (C) 2002, Joe Armstrong
+%% File    : lib_tcp_server.erl
+%% Author  : Joe Armstrong (joe@sics.se)
+%% Purpose : Keeps track of a number of TCP sessions
+%% Time-stamp: <2012-10-12 08:33:25 joe>
+
+-module(tcp_test).
+
+%-include("include/nano_tcp_server.hrl").
+%-include("../include/nano_tcp_server.hrl").
+
+-export([start/0]).
+
+
+start()->
+    application:set_env(tcp_interface,port,1055),
+    application:set_env(tcp_interface,serverSetUp,[binary,{packet,4},{reuseaddr,true},{active,true}]),
+    application:set_env(tcp_interface,portserviceModule,microservice),
+  %  io:format(" ~p~n",[{?MODULE,?LINE,application:get_env(tcp_interface_test, port)}]),
+   % io:format(" ~p~n",[{?MODULE,?LINE,application:get_env(tcp_interface_test, addr)}]),
+   % io:format(" ~p~n",[{?MODULE,?LINE,application:get_env(tcp_interface_test,serverSetUp)}]),
+    ok= application:load(tcp_interface),
+    ok=application:start(tcp_interface),
+    {ok,Socket}=client_generic:connect("localhost",1055,[binary,{packet,4}]),
+    io:format("call_client1 ~p~n",[{self(),Socket}]),
+    Reply1=client_generic:call(Socket,{os,cmd,["pwd"]}),
+    io:format(" ~p~n",[{Reply1}]),
+    ok=client_generic:disconnect(Socket),
+    application:stop(tcp_interface),
+    application:unload(tcp_interface),
+
+    application:set_env(tcp_interface,port,1056),
+    application:set_env(tcp_interface,serverSetUp,[binary,{packet,4},{reuseaddr,true},{active,true}]),
+    application:set_env(tcp_interface,portserviceModule,microservice),
+    ok= application:load(tcp_interface),
+    ok=application:start(tcp_interface),
+    {ok,Socket1}=client_generic:connect("localhost",1056,[binary,{packet,4}]),
+    io:format("call_client1 ~p~n",[{self(),Socket1}]),
+    Reply2=client_generic:call(Socket1,{os,cmd,["ls -al"]}),
+    io:format(" ~p~n",[{Reply2}]),
+    ok=client_generic:disconnect(Socket1).
+    
+loop()->
+    spawn(fun()->call_client1() end),
+    spawn(fun()->call_client2() end),
+    timer:sleep(5000),
+    loop().
+    
+call_client1()-> 
+
+    {ok,Socket}=client_generic:connect("localhost",1055,[binary,{packet,4}]),
+    io:format("call_client1 ~p~n",[{self(),Socket}]),
+    Reply1=client_generic:call(Socket,{os,cmd,["pwd"]}),
+   % io:format(" ~p~n",[{Reply1}]),
+   % Reply2=client_generic:call(Socket,{os,cmd,["date"]}),
+%    io:format(" ~p~n",[{Reply2}]),
+ %   Reply3=client_generic:call(Socket,{os,cmd,["$HOME"]}),
+  %  io:format(" ~p~n",[{Reply3}]),
+    ok=client_generic:disconnect(Socket),
+    timer:sleep(1000),
+    call_client1().
+
+call_client2()-> 
+    {ok,Socket}=client_generic:connect("localhost",1055,[binary,{packet,4}]),
+    call_client2(Socket).
+  
+call_client2(Socket)->
+    io:format("call_client2 ~p~n",[{self(),Socket}]),
+    Reply3=client_generic:call(Socket,{os,cmd,["$HOME"]}),
+  %  io:format(" ~p~n",[{Reply3}]),
+  %  ok=client_generic:disconnect(Socket),
+    timer:sleep(1000),
+    call_client2(Socket).

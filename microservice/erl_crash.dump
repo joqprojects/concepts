@@ -1,0 +1,8 @@
+=erl_crash_dump:0.3
+Thu Jan  3 23:48:46 2019
+Slogan: erl_child_setup closed
+System version: Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]
+Compiled: Sat May 13 21:29:33 2017
+Taints: erl_tracer
+Atoms: 7269
+Calling Thread: scheduler:1
