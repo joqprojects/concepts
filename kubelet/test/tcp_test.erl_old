@@ -1,0 +1,62 @@
+%% ---
+%%  Excerpted from "Programming Erlang, Second Edition",
+%%  published by The Pragmatic Bookshelf.
+%%  Copyrights apply to this code. It may not be used to create training material, 
+%%  courses, books, articles, and the like. Contact us if you are in doubt.
+%%  We make no guarantees that this code is fit for any purpose. 
+%%  Visit http://www.pragmaticprogrammer.com/titles/jaerlang2 for more book information.
+%%---
+%% Copyright (C) 2002, Joe Armstrong
+%% File    : lib_tcp_server.erl
+%% Author  : Joe Armstrong (joe@sics.se)
+%% Purpose : Keeps track of a number of TCP sessions
+%% Time-stamp: <2012-10-12 08:33:25 joe>
+
+-module(tcp_test).
+
+-include("include/nano_tcp_server.hrl").
+%-include("../include/nano_tcp_server.hrl").
+
+-export([start/0,start_client/0]).
+
+
+start()->
+    application:load(generic),
+    application:start(generic),
+    ok.
+    
+start_client()-> 
+    
+    spawn(nano_tcp_server,start_seq_server,[]),
+    {ok,Pid}=nano_tcp_proxy:client_connect(erlang),
+ %   Reply1=nano_tcp_proxy:client_call({erlang,os,cmd,["ls -al"]},Pid),
+  %  io:format("~p~n",[{?MODULE,?LINE,Reply1}]),
+    Reply2=nano_tcp_proxy:client_call({erlang,os,cmd,["pwd"]},Pid),
+    io:format("nnnn ~p~n",[{?MODULE,?LINE,Reply2}]),
+    nano_tcp_proxy:client_disconnect(Pid),
+    
+    loop(0),
+    ok.
+
+loop(N)->
+  % start(),
+    spawn(nano_tcp_proxy,start_proxy,[]),
+    spawn(nano_tcp_server,start_seq_server,[]),
+    {ok,Pid}=nano_tcp_proxy:client_connect(mymath),
+    case N of
+	2->
+	    nano_tcp_proxy:client_call({erlang,code,load_file,[mymath]},Pid),
+	    nano_tcp_proxy:client_call({erlang,code,soft_purge,[mymath]},Pid),
+	    nano_tcp_proxy:client_cast({erlang,code,load_file,[nano_tcp_server]},Pid),
+	    nano_tcp_proxy:client_cast({erlang,code,soft_purge,[nano_tcp_server]},Pid),
+	    nano_tcp_proxy:client_cast({erlang,code,load_file,[nano_tcp_proxy]},Pid),
+	    nano_tcp_proxy:client_cast({erlang,code,soft_purge,[nano_tcp_proxy]},Pid),
+	    N1=0;
+	N->
+	    N1=N+1
+    end,
+    Reply2=nano_tcp_proxy:client_call({mymath,mymath,divi,[8,0]},Pid),
+    io:format(" ~p~n",[{time(),?MODULE,?LINE,Reply2,N1}]),
+    nano_tcp_proxy:client_disconnect(Pid),
+    timer:sleep(3000),
+    loop(N1).

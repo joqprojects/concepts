@@ -1,0 +1,59 @@
+%% ---
+%%  Excerpted from "Programming Erlang, Second Edition",
+%%  published by The Pragmatic Bookshelf.
+%%  Copyrights apply to this code. It may not be used to create training material, 
+%%  courses, books, articles, and the like. Contact us if you are in doubt.
+%%  We make no guarantees that this code is fit for any purpose. 
+%%  Visit http://www.pragmaticprogrammer.com/titles/jaerlang2 for more book information.
+%%---
+%% Copyright (C) 2002, Joe Armstrong
+%% File    : lib_tcp_server.erl
+%% Author  : Joe Armstrong (joe@sics.se)
+%% Purpose : Keeps track of a number of TCP sessions
+%% Time-stamp: <2012-10-12 08:33:25 joe>
+
+-module(tcp_test).
+
+%-include("include/nano_tcp_server.hrl").
+%-include("../include/nano_tcp_server.hrl").
+
+-export([start/0]).
+
+
+start()->
+    microservice_interface:start(1055,[binary,{packet,4},{reuseaddr,true},{active,true}], microservice,3),
+%    spawn(fun()->call_client1() end),
+    spawn(fun()->start_client2(5) end),
+    spawn(fun()->upgrade() end).
+    
+upgrade()->
+    timer:sleep(1000),
+ %   code:soft_purge(microservice_server),
+ %   code:load_file(microservice_server),
+    upgrade().
+
+call_client1()-> 
+    {ok,Socket}=microservice_interface:client_connect("localhost",1055,[binary,{packet,4}]),
+    io:format("call_client1 ~p~n",[{self(),Socket}]),
+    Reply1=microservice_interface:client_call(Socket,{microservice,divi,[10,0]}),
+    io:format(" ~p~n",[{?MODULE,?LINE,Reply1}]),
+    ok=microservice_interface:client_disconnect(Socket),
+    timer:sleep(1000),
+    spawn(fun()->call_client1() end).
+
+start_client2(0)->
+    ok;
+start_client2(N)->
+ %  io:format(" ~p~n",[{?MODULE,?LINE,N}]),
+    {ok,Socket}=microservice_interface:client_connect("localhost",1055,[binary,{packet,4}]),
+    spawn(fun()-> call_client2(Socket) end),
+    start_client2(N-1).
+
+call_client2(Socket)->
+    io:format("call_client2 ~p~n",[{self(),Socket}]),
+    Reply1=microservice_interface:client_call(Socket,{microservice,divi,[20,0]}),
+    io:format(" ~p~n",[Reply1]),
+    timer:sleep(1000),
+    call_client2(Socket).
+    
+		  
