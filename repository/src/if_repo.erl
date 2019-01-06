@@ -6,7 +6,7 @@
 %%% Generic tcp server interface to internet and "middle man". Concept 
 %%% described in Joe Armstrong book
 %%% -------------------------------------------------------------------
--module(template_lib).
+-module(if_repo).
 
 %% --------------------------------------------------------------------
 %% Include files
@@ -19,22 +19,38 @@
 %% --------------------------------------------------------------------
 %% External exports
 %% --------------------------------------------------------------------
--export([add/2,divi/2]).
+-export([divi/2,add/2]).
 %%
 %% API Functions
 %%
-%%---------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
 %% Function: fun/x
 %% Description: fun x skeleton 
 %% Returns:ok|error
 %% --------------------------------------------------------------------
-
 add(A,B)->
-    A+B.
+    Reply=try repo:add(A,B) of
+	Sum->
+	    Sum
+    catch
+	exit:Reason->
+	    Reason
+    end,
+    %io:format("Reply ~p~n",[Reply]),
+    Reply.
+
 
 divi(A,B)->
-    A/B.
-
+    Reply=try repo:divi(A,B) of
+	Result->
+	    Result
+    catch
+	exit:Reason->
+	    Reason
+    end,
+   % io:format("Reply ~p~n",[Reply]),
+    Reply.
 %%
 %% Local Functions
 %%

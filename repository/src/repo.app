@@ -1,13 +1,13 @@
 %% This is the application resource file (.app file) for the 'base'
 %% application.
-{application, template,
-[{description, "template  " },
+{application, repo,
+[{description, "repo  " },
 {vsn, "1.0.0" },
 {modules, 
-	  [if_template,template_lib,
-	   template_app,template_sup,template]},
+	  [if_repo,repo_lib,
+	   repo_app,repo_sup,repo]},
 {registered,[template]},
 {applications, [kernel,stdlib]},
-{mod, {template_app,[]}},
+{mod, {repo_app,[]}},
 {start_phases, []}
 ]}.

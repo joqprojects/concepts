@@ -1,10 +1,10 @@
 %%% -------------------------------------------------------------------
 %%% Author  : uabjle
-%%% Description : genserver template with jle embedded extensions 
+%%% Description : genserver repo with jle embedded extensions 
 %%%
 %%% Created : 10 dec 2012
 %%% -------------------------------------------------------------------
--module(template).
+-module(repo).
 
 -behaviour(gen_server).
 
@@ -88,17 +88,17 @@ init([]) ->
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
 handle_call({build_artifact,ServiceId,EbinDir}, _From, State) ->
-    Reply=rpc:call(node(),template_lib,build_artifact,[ServiceId,EbinDir]),
+    Reply=rpc:call(node(),repo_lib,build_artifact,[ServiceId,EbinDir]),
     {reply, Reply, State};
 
 handle_call({update_artifact,Artifact}, _From, State) ->
     DbaseId=State#state.dbase_id,
-    Reply=rpc:call(node(),template_lib,update_artifact,[Artifact,DbaseId]),
+    Reply=rpc:call(node(),repo_lib,update_artifact,[Artifact,DbaseId]),
     {reply, Reply, State};
 
 handle_call({read_artifact,ServiceId,Vsn}, _From, State) ->
     DbaseId=State#state.dbase_id,
-    Reply=rpc:call(node(),template_lib,read_artifact,[ServiceId,Vsn,DbaseId]),
+    Reply=rpc:call(node(),repo_lib,read_artifact,[ServiceId,Vsn,DbaseId]),
     {reply, Reply, State};
 
 handle_call({stop}, _From, State) ->

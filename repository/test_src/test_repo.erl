@@ -4,7 +4,7 @@
 %%%  
 %%% Created : 10 dec 2012
 %%% -------------------------------------------------------------------
--module(test_template).
+-module(test_repo).
 %% --------------------------------------------------------------------
 %% Include files 
 %% --------------------------------------------------------------------
@@ -28,11 +28,11 @@
 %% --------------------------------------------------------------------
 %% 1. Initial set up
 start_test()->
-    ok=application:start(template),   
+    ok=application:start(repo),   
     ok.
 
 build_100_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.0/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.0/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.0",
 	      appfile={"template.app",_},
@@ -40,16 +40,16 @@ build_100_test()->
     ok.
 
 update_100_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.0/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.0/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.0",
 	      appfile={"template.app",_},
 	      modules=_}=Artifact,
-     {ok,artifact_updated}=template:update_artifact(Artifact),
+     {ok,artifact_updated}=repo:update_artifact(Artifact),
     ok.
 
 read_100_test()->
-    Artifact=template:read_artifact("template","1.0.0"),
+    Artifact=repo:read_artifact("template","1.0.0"),
     #artifact{service_id="template",
 	      vsn="1.0.0",
 	      appfile={"template.app",_},
@@ -57,7 +57,7 @@ read_100_test()->
     ok.
 %------------------- 
 build_101_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.1/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.1/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.1",
 	      appfile={"template.app",_},
@@ -65,36 +65,36 @@ build_101_test()->
     ok.
 
 update_101_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.1/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.1/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.1",
 	      appfile={"template.app",_},
 	      modules=_}=Artifact,
-     {ok,artifact_updated}=template:update_artifact(Artifact),
+     {ok,artifact_updated}=repo:update_artifact(Artifact),
     ok.
 
 read_100_1_test()->
     #artifact{service_id="template",
 	      vsn="1.0.0",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.0"),
+	      modules=_}=repo:read_artifact("template","1.0.0"),
     ok.
 read_101_0_test()->
     #artifact{service_id="template",
 	      vsn="1.0.1",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.1"),
+	      modules=_}=repo:read_artifact("template","1.0.1"),
     ok.
 read_latest_101_100_test()->
     #artifact{service_id="template",
 	      vsn="1.0.1",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template",latest),
+	      modules=_}=repo:read_artifact("template",latest),
 
     ok.
 %-------------------
 build_103_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.3/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.3/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.3",
 	      appfile={"template.app",_},
@@ -102,44 +102,44 @@ build_103_test()->
     ok.
 
 update_103_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.3/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.3/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.3",
 	      appfile={"template.app",_},
 	      modules=_}=Artifact,
-     {ok,artifact_updated}=template:update_artifact(Artifact),
+     {ok,artifact_updated}=repo:update_artifact(Artifact),
     ok.
 
 read_100_2_test()->
     #artifact{service_id="template",
 	      vsn="1.0.0",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.0"),
+	      modules=_}=repo:read_artifact("template","1.0.0"),
     ok.
 read_101_1_test()->
     #artifact{service_id="template",
 	      vsn="1.0.1",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.1"),
+	      modules=_}=repo:read_artifact("template","1.0.1"),
     ok.
 
 read_103_0_test()->
     #artifact{service_id="template",
 	      vsn="1.0.3",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.3"),
+	      modules=_}=repo:read_artifact("template","1.0.3"),
     ok.
 read_latest_103_101_100_test()->
     #artifact{service_id="template",
 	      vsn="1.0.3",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template",latest),
+	      modules=_}=repo:read_artifact("template",latest),
 
     ok.
 
 %-------------------
 build_102_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.2/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.2/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.2",
 	      appfile={"template.app",_},
@@ -147,52 +147,73 @@ build_102_test()->
     ok.
 
 update_102_test()->
-    {ok,Artifact}=template:build_artifact("template","template_1.0.2/ebin"),
+    {ok,Artifact}=repo:build_artifact("template","template_1.0.2/ebin"),
     #artifact{service_id="template",
 	      vsn="1.0.2",
 	      appfile={"template.app",_},
 	      modules=_}=Artifact,
-     {ok,artifact_updated}=template:update_artifact(Artifact),
+     {ok,artifact_updated}=repo:update_artifact(Artifact),
     ok.
 
 read_100_3_test()->
     #artifact{service_id="template",
 	      vsn="1.0.0",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.0"),
+	      modules=_}=repo:read_artifact("template","1.0.0"),
     ok.
 read_101_2_test()->
     #artifact{service_id="template",
 	      vsn="1.0.1",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.1"),
+	      modules=_}=repo:read_artifact("template","1.0.1"),
     ok.
 
 read_103_1_test()->
     #artifact{service_id="template",
 	      vsn="1.0.3",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.3"),
+	      modules=_}=repo:read_artifact("template","1.0.3"),
     ok.
 
 read_102_0_test()->
     #artifact{service_id="template",
 	      vsn="1.0.2",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template","1.0.2"),
+	      modules=_}=repo:read_artifact("template","1.0.2"),
     ok.
 
 read_latest_102_103_101_100_test()->
     #artifact{service_id="template",
 	      vsn="1.0.3",
 	      appfile={"template.app",_},
-	      modules=_}=template:read_artifact("template",latest),
+	      modules=_}=repo:read_artifact("template",latest),
 
     ok.
 
+
+%%---------------- Test to load an application and start it
+
+load_start_test()->
+    #artifact{service_id=ServiceId,
+	      vsn=Vsn,
+	      appfile={AppFileBaseName,AppBinary},
+	      modules=Modules}=repo:read_artifact("template","1.0.0"),  
+    "template"=ServiceId,
+    EbinDir="service_ebin",
+    Appfile=filename:join(EbinDir,AppFileBaseName),
+    ok=file:write_file(Appfile,AppBinary),
+    [file:write_file(filename:join(EbinDir,ModuleName),Bin)||{ModuleName,Bin}<-Modules],
+    ok=application:start(template),
+    42=template:add(20,22),
+    42.0=template:divi(420,10),
+   ok=application:stop(template),
+    ok.
+    
+    
 stop_test()->  
+    application:stop(repo),
     file:delete("repository.dbase"),
-    ok=application:stop(template),
+    []=os:cmd("rm -r service_ebin/*"),
     spawn(fun()->kill_session() end),
     ok.
 kill_session()->

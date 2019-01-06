@@ -6,7 +6,7 @@
 %%% Generic tcp server interface to internet and "middle man". Concept 
 %%% described in Joe Armstrong book
 %%% -------------------------------------------------------------------
--module(template_lib).
+-module(repo_lib).
 
 %% --------------------------------------------------------------------
 %% Include files
@@ -86,7 +86,7 @@ update_artifact(Artifact,DbaseId)->
 		false ->
 		    LatestVsn=ArtifactRecord#artifact_record.latest_vsn,
 		    VsnList=
-		    case template_lib:cmp_vsn_strings(Vsn,LatestVsn) of
+		    case repo_lib:cmp_vsn_strings(Vsn,LatestVsn) of
 			larger->
 			    NewLatestVsn=Vsn;
 			_ ->

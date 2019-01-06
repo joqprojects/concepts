@@ -7,4 +7,4 @@ test:
 	cp src/*.app ebin;
 	erlc -o ebin ../common/src/*.erl;
 	erlc -o test_ebin test_src/*.erl;
-	erl -pa ebin -pa test_ebin -s test_template test -sname test_template
+	erl -pa ebin -pa test_ebin -pa service_ebin -s test_repo test -sname test_repo
